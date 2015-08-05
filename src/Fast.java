@@ -1,6 +1,7 @@
 public class Fast {
     private PointWrapper[] array;
     private PointWrapper[] sortedArray;
+    private static PointWrapper origin;
 
     private Fast(String fileName) {
         In in = new In(fileName);
@@ -27,20 +28,20 @@ public class Fast {
     private void findCollinear() {
         int n = array.length;
         for (int i = 0; i < n; i++) {
-            PointWrapper.origin = array[i];
-            PointWrapper.origin.point.draw();
+            origin = array[i];
+            origin.point.draw();
             QuickX.sort(sortedArray);
             int j = 1;
             while (j < n) {
                 int count = 1;
-                double slopeJ = PointWrapper.origin.point.slopeTo(sortedArray[j].point);
-                while (j + count < n && slopeJ == PointWrapper.origin.point.slopeTo(sortedArray[j + count].point)) {
+                double slopeJ = origin.point.slopeTo(sortedArray[j].point);
+                while (j + count < n && slopeJ == origin.point.slopeTo(sortedArray[j + count].point)) {
                     count++;
                 }
                 if (count >= 3) {
                     Point[] segment = new Point[count + 1];
                     int sIndex = 0;
-                    segment[sIndex++] = PointWrapper.origin.point;
+                    segment[sIndex++] = origin.point;
                     for (int s = j, sLength = j + count; s < sLength; s++) {
                         segment[sIndex++] = sortedArray[s].point;
                     }
@@ -54,6 +55,20 @@ public class Fast {
                     j += count;
                 } else j++;
             }
+        }
+    }
+
+    private static class PointWrapper implements Comparable<PointWrapper> {
+
+        private Point point;
+
+        private PointWrapper(Point point) {
+            this.point = point;
+        }
+
+        @Override
+        public int compareTo(PointWrapper o) {
+            return origin.point.SLOPE_ORDER.compare(point, o.point);
         }
     }
 }
