@@ -28,16 +28,13 @@ public class Brute {
             p.draw();
             for (int j = i + 1; j < n; j++) {
                 Point q = array[j];
-                q.draw();
                 double slopeQ = p.slopeTo(q);
                 for (int k = j + 1; k < n; k++) {
                     Point r = array[k];
-                    r.draw();
                     double slopeR = p.slopeTo(r);
                     if (slopeQ != slopeR) continue;
                     for (int l = k + 1; l < n; l++) {
                         Point s = array[l];
-                        s.draw();
                         double slopeS = p.slopeTo(s);
                         if (slopeQ != slopeS) continue;
                         Point[] segment = {p, q, r, s};

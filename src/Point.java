@@ -21,8 +21,8 @@ public class Point implements Comparable<Point> {
             double slope1 = slopeTo(o1);
             double slope2 = slopeTo(o2);
             if (slope1 == slope2) return 0;
-            if (slope1 == Double.MAX_VALUE || slope2 == -Double.MAX_VALUE) return 1;
-            if (slope1 == -Double.MAX_VALUE || slope2 == Double.MAX_VALUE) return -1;
+            if (slope1 == Double.POSITIVE_INFINITY || slope2 == Double.NEGATIVE_INFINITY) return 1;
+            if (slope1 == Double.NEGATIVE_INFINITY || slope2 == Double.POSITIVE_INFINITY) return -1;
             double diff = slope1 - slope2;
             return (diff > 0) ? 1 : -1;
         }
@@ -52,14 +52,10 @@ public class Point implements Comparable<Point> {
 
     // slope between this point and that point
     public double slopeTo(Point that) {
-        if (compareTo(that) == 0) return -Double.MAX_VALUE;
-        if (x == that.x) return Double.MAX_VALUE;
+        if (compareTo(that) == 0) return Double.NEGATIVE_INFINITY;
+        if (x == that.x) return Double.POSITIVE_INFINITY;
         if (y == that.y) return 0;
-        double xd0 = (double) x;
-        double yd0 = (double) y;
-        double xd1 = (double) that.x;
-        double yd1 = (double) that.y;
-        return (yd1 - yd0) / (xd1 - xd0);
+        return (double)(that.y - y) / (double)(that.x - x);
     }
 
     // is this point lexicographically smaller than that one?
@@ -74,10 +70,5 @@ public class Point implements Comparable<Point> {
     public String toString() {
         /* DO NOT MODIFY */
         return "(" + x + ", " + y + ")";
-    }
-
-    // unit test
-    public static void main(String[] args) {
-        /* YOUR CODE HERE */
     }
 }
