@@ -1,3 +1,6 @@
+import java.util.LinkedList;
+import java.util.List;
+
 public class Fast {
     private PointWrapper[] array;
     private PointWrapper[] sortedArray;
@@ -35,7 +38,9 @@ public class Fast {
             while (j < n) {
                 int count = 1;
                 double slopeJ = origin.point.slopeTo(sortedArray[j].point);
-                while (j + count < n && slopeJ == origin.point.slopeTo(sortedArray[j + count].point)) {
+                while (j + count < n
+                        && slopeJ == origin.point.slopeTo(sortedArray[j + count].point)
+                        && !origin.isCollinearWith(sortedArray[j + count].point)) {
                     count++;
                 }
                 if (count >= 3) {
@@ -44,6 +49,11 @@ public class Fast {
                     segment[sIndex++] = origin.point;
                     for (int s = j, sLength = j + count; s < sLength; s++) {
                         segment[sIndex++] = sortedArray[s].point;
+                        origin.addCollinearPoint(sortedArray[s].point);
+                        for (int ss = j; ss < sLength; ss++) {
+                            if (s == ss) continue;
+                            sortedArray[s].addCollinearPoint(sortedArray[ss].point);
+                        }
                     }
                     Insertion.sort(segment);
                     for (int s = 0, sLength = segment.length; s < sLength; s++) {
@@ -61,6 +71,7 @@ public class Fast {
     private static class PointWrapper implements Comparable<PointWrapper> {
 
         private Point point;
+        private List<Point> collinearPoints;
 
         private PointWrapper(Point point) {
             this.point = point;
@@ -69,6 +80,16 @@ public class Fast {
         @Override
         public int compareTo(PointWrapper o) {
             return origin.point.SLOPE_ORDER.compare(point, o.point);
+        }
+
+        private void addCollinearPoint(Point p) {
+            if (collinearPoints == null) collinearPoints = new LinkedList<>();
+            collinearPoints.add(p);
+        }
+
+        private boolean isCollinearWith(Point p) {
+            if (collinearPoints == null) return false;
+            return collinearPoints.contains(p);
         }
     }
 }
